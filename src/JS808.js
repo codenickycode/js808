@@ -1,6 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
+
+const INIT_EMPTY = () => {
+  const empty = [];
+  for (let i = 0; i < 16; i++) {
+    empty[i] = 0;
+  }
+  const pattern = { kick: null, snr: null, oh: null, ch: null };
+  Object.keys(pattern).forEach((key) => {
+    pattern[key] = empty;
+  });
+  return pattern;
+};
 
 export default function JS808() {
+  const [pattern, usePattern] = useState(INIT_EMPTY());
+  console.log(pattern);
+
+  function toggleCell(inst, i) {
+    console.log(inst, i);
+  }
   return (
     <div id='js808'>
       <div id='top'>
@@ -17,10 +35,10 @@ export default function JS808() {
       </div>
       <div id='sequencer'>
         <div id='timeline'>This will be the timeline row</div>
-        <Instrument inst={'kick'} />
-        <Instrument inst={'snr'} />
-        <Instrument inst={'oh'} />
-        <Instrument inst={'ch'} />
+        <Instrument inst={'kick'} toggleCell={toggleCell} />
+        <Instrument inst={'snr'} toggleCell={toggleCell} />
+        <Instrument inst={'oh'} toggleCell={toggleCell} />
+        <Instrument inst={'ch'} toggleCell={toggleCell} />
       </div>
     </div>
   );
@@ -34,7 +52,7 @@ function initCells() {
   return cells;
 }
 
-function Instrument({ inst }) {
+function Instrument({ inst, toggleCell }) {
   const cells = initCells();
   const styles = `cell cell-${inst}`;
   const label = `${inst}-label`;
@@ -45,7 +63,14 @@ function Instrument({ inst }) {
       </div>
       {cells.map((cell, i) => {
         const id = inst + i;
-        return <div key={id} id={id} className={styles}></div>;
+        return (
+          <div
+            key={id}
+            id={id}
+            className={styles}
+            onClick={() => toggleCell(inst, i)}
+          ></div>
+        );
       })}
     </div>
   );
