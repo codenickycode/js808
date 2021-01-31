@@ -1,13 +1,37 @@
-body {
+* {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+:root {
+  --green: rgba(64, 244, 195, 1);
+  --green-half: rgba(64, 244, 195, 0.5);
+  --purple: rgba(210, 149, 239, 1);
+  --purple-half: rgba(210, 149, 239, 0.5);
+  --blue: rgba(133, 155, 214, 1);
+  --blue-half: rgba(133, 155, 214, 0.5);
+  --red: rgba(253, 139, 157, 1);
+  --red-half: rgba(253, 139, 157, 0.5);
+  --yellow: rgba(210, 254, 147, 1);
+  --yellow-half: rgba(210, 254, 147, 0.5);
+  --black: rgba(31, 31, 33, 1);
+  --black-half: rgba(31, 31, 33, 0.5);
+  --white: rgba(236, 237, 229, 1);
+  --white-half: rgba(236, 237, 229, 0.5);
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  background: var(--black);
+}
+
+div {
+  border: 1px solid var(--white);
+  background: var(--black-half);
 }
