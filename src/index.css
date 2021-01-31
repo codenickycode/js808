@@ -63,7 +63,7 @@ div {
 .cell {
   min-width: 2rem;
   min-height: 2rem;
-  /* opacity: 0.5; */
+  opacity: 0.5;
 }
 
 .full {
@@ -72,4 +72,17 @@ div {
 
 .half {
   background: var(--red-half);
+}
+
+.on {
+  animation: pulse 100ms linear forwards;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.5;
+  }
 }

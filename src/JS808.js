@@ -15,7 +15,7 @@ const INIT_EMPTY = () => {
 export default function JS808() {
   const [pattern, setPattern] = useState(INIT_EMPTY());
   const [playing, setPlaying] = useState(false);
-  const [clock, setClock] = useState(0);
+  const [clock, setClock] = useState(-1);
   const [bpm, setBpm] = useState(128);
 
   useEffect(() => {
@@ -26,15 +26,16 @@ export default function JS808() {
     console.log(`playing: ${playing}`);
   }, [playing]);
 
-  useEffect(() => {
-    console.log(`clock: ${clock}`);
-  }, [clock]);
+  //   useEffect(() => {
+  //     console.log(`clock: ${clock}`);
+  //   }, [clock]);
 
+  // timeline clock
   const interval = useRef(null);
   useEffect(() => {
     if (playing) {
       interval.current = setInterval(
-        () => setClock((prev) => (prev === 16 ? 1 : prev + 1)),
+        () => setClock((prev) => (prev === 15 ? 0 : prev + 1)),
         15000 / bpm
       );
     } else {
@@ -43,6 +44,18 @@ export default function JS808() {
     }
     return () => clearInterval(interval.current);
   }, [interval, playing]);
+
+  // cell animation
+  useEffect(() => {
+    if (playing) {
+      const cells = document.querySelectorAll(`.cell-${clock}`);
+      cells.forEach((cell) => {
+        cell.classList.remove('on');
+        void cell.offsetWidth; // rm>offset>add to reset css animation
+        cell.classList.add('on');
+      });
+    }
+  }, [playing, clock]);
 
   function toggleCell(inst, i) {
     const newInst = [...pattern[inst]];
@@ -119,10 +132,10 @@ function Instrument({ inst, toggleCell, pattern }) {
             id={id}
             className={
               pattern[i] === 0
-                ? styles
+                ? styles + ` cell-${i}`
                 : pattern[i] === 1
-                ? styles + ' full'
-                : styles + ' half'
+                ? styles + ` cell-${i} full`
+                : styles + ` cell-${i} half`
             }
             onClick={() => toggleCell(inst, i)}
           ></div>
