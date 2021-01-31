@@ -17,11 +17,36 @@ export default function JS808() {
       </div>
       <div id='sequencer'>
         <div id='timeline'>This will be the timeline row</div>
-        <div id='kick'>This will be the kick row</div>
-        <div id='snr'>This will be the snr row</div>
-        <div id='oh'>This will be the oh row</div>
-        <div id='ch'>This will be the ch row</div>
+        <Instrument inst={'kick'} />
+        <Instrument inst={'snr'} />
+        <Instrument inst={'oh'} />
+        <Instrument inst={'ch'} />
       </div>
+    </div>
+  );
+}
+
+function initCells() {
+  const cells = [];
+  for (let i = 0; i < 16; i++) {
+    cells[i] = 0;
+  }
+  return cells;
+}
+
+function Instrument({ inst }) {
+  const cells = initCells();
+  const styles = `cell cell-${inst}`;
+  const label = `${inst}-label`;
+  return (
+    <div id={inst} className='inst'>
+      <div className='inst-label'>
+        <h2 id={label}>{inst}</h2>
+      </div>
+      {cells.map((cell, i) => {
+        const id = inst + i;
+        return <div key={id} id={id} className={styles}></div>;
+      })}
     </div>
   );
 }
