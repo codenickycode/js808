@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 const INIT_EMPTY = () => {
   const empty = [];
@@ -14,10 +14,35 @@ const INIT_EMPTY = () => {
 
 export default function JS808() {
   const [pattern, setPattern] = useState(INIT_EMPTY());
+  const [playing, setPlaying] = useState(false);
+  const [clock, setClock] = useState(0);
+  const [bpm, setBpm] = useState(128);
 
   useEffect(() => {
     console.log(pattern);
   }, [pattern]);
+
+  useEffect(() => {
+    console.log(`playing: ${playing}`);
+  }, [playing]);
+
+  useEffect(() => {
+    console.log(`clock: ${clock}`);
+  }, [clock]);
+
+  const interval = useRef(null);
+  useEffect(() => {
+    if (playing) {
+      interval.current = setInterval(
+        () => setClock((prev) => (prev === 16 ? 1 : prev + 1)),
+        15000 / bpm
+      );
+    } else {
+      clearInterval(interval.current);
+      setClock(0);
+    }
+    return () => clearInterval(interval.current);
+  }, [interval, playing]);
 
   function toggleCell(inst, i) {
     const newInst = [...pattern[inst]];
@@ -37,8 +62,12 @@ export default function JS808() {
       <div id='top'>
         <h1 it='title'>JS-808</h1>
         <div id='transport'>
-          <button id='stop'>stop</button>
-          <button id='play'>play</button>
+          <button id='stop' onClick={() => setPlaying(false)}>
+            stop
+          </button>
+          <button id='play' onClick={() => setPlaying(true)}>
+            play
+          </button>
           <input id='bpm' />
           <label htmlFor='bpm' id='bpm-label'>
             bpm

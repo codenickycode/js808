@@ -63,6 +63,7 @@ div {
 .cell {
   min-width: 2rem;
   min-height: 2rem;
+  /* opacity: 0.5; */
 }
 
 .full {
