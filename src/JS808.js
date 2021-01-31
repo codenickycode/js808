@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const INIT_EMPTY = () => {
   const empty = [];
@@ -13,12 +13,25 @@ const INIT_EMPTY = () => {
 };
 
 export default function JS808() {
-  const [pattern, usePattern] = useState(INIT_EMPTY());
-  console.log(pattern);
+  const [pattern, setPattern] = useState(INIT_EMPTY());
+
+  useEffect(() => {
+    console.log(pattern);
+  }, [pattern]);
 
   function toggleCell(inst, i) {
-    console.log(inst, i);
+    const newInst = [...pattern[inst]];
+    newInst.splice(
+      i,
+      1,
+      pattern[inst][i] === 0 ? 1 : pattern[inst][i] === 1 ? 0.5 : 0
+    );
+    setPattern((prev) => ({
+      ...prev,
+      [inst]: newInst,
+    }));
   }
+
   return (
     <div id='js808'>
       <div id='top'>
