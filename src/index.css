@@ -64,3 +64,11 @@ div {
   min-width: 2rem;
   min-height: 2rem;
 }
+
+.full {
+  background: var(--red);
+}
+
+.half {
+  background: var(--red-half);
+}

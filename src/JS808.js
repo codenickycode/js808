@@ -48,10 +48,18 @@ export default function JS808() {
       </div>
       <div id='sequencer'>
         <div id='timeline'>This will be the timeline row</div>
-        <Instrument inst={'kick'} toggleCell={toggleCell} />
-        <Instrument inst={'snr'} toggleCell={toggleCell} />
-        <Instrument inst={'oh'} toggleCell={toggleCell} />
-        <Instrument inst={'ch'} toggleCell={toggleCell} />
+        <Instrument
+          inst={'kick'}
+          pattern={pattern.kick}
+          toggleCell={toggleCell}
+        />
+        <Instrument
+          inst={'snr'}
+          pattern={pattern.snr}
+          toggleCell={toggleCell}
+        />
+        <Instrument inst={'oh'} pattern={pattern.oh} toggleCell={toggleCell} />
+        <Instrument inst={'ch'} pattern={pattern.ch} toggleCell={toggleCell} />
       </div>
     </div>
   );
@@ -65,7 +73,7 @@ function initCells() {
   return cells;
 }
 
-function Instrument({ inst, toggleCell }) {
+function Instrument({ inst, toggleCell, pattern }) {
   const cells = initCells();
   const styles = `cell cell-${inst}`;
   const label = `${inst}-label`;
@@ -80,7 +88,13 @@ function Instrument({ inst, toggleCell }) {
           <div
             key={id}
             id={id}
-            className={styles}
+            className={
+              pattern[i] === 0
+                ? styles
+                : pattern[i] === 1
+                ? styles + ' full'
+                : styles + ' half'
+            }
             onClick={() => toggleCell(inst, i)}
           ></div>
         );
