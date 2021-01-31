@@ -1,4 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { ReactComponent as StopIcon } from './icons/stop.svg';
+import { ReactComponent as PlayIcon } from './icons/play.svg';
+import { ReactComponent as ArrowDownIcon } from './icons/chevron-down.svg';
 
 function initCells() {
   const cells = [];
@@ -9,13 +12,9 @@ function initCells() {
 }
 
 const INIT_EMPTY = () => {
-  const empty = [];
-  for (let i = 0; i < 16; i++) {
-    empty[i] = 0;
-  }
   const pattern = { kick: null, snr: null, oh: null, ch: null };
   Object.keys(pattern).forEach((key) => {
-    pattern[key] = empty;
+    pattern[key] = initCells();
   });
   return pattern;
 };
@@ -61,6 +60,10 @@ export default function JS808() {
           cell.classList.remove('on');
           void cell.offsetWidth; // rm>offset>add to reset css animation
           cell.classList.add('on');
+        } else if (cell.classList.contains('tl')) {
+          cell.classList.remove('tl-on');
+          void cell.offsetWidth; // rm>offset>add to reset css animation
+          cell.classList.add('tl-on');
         }
       });
     }
@@ -83,18 +86,7 @@ export default function JS808() {
     <div id='js808'>
       <div id='top'>
         <h1 it='title'>JS-808</h1>
-        <div id='transport'>
-          <button id='stop' onClick={() => setPlaying(false)}>
-            stop
-          </button>
-          <button id='play' onClick={() => setPlaying(true)}>
-            play
-          </button>
-          <input id='bpm' />
-          <label htmlFor='bpm' id='bpm-label'>
-            bpm
-          </label>
-        </div>
+        <Transport setPlaying={setPlaying} bpm={bpm} setBpm={setBpm} />
         <select id='sequence-select'></select>
       </div>
       <div id='sequencer-container'>
@@ -104,7 +96,7 @@ export default function JS808() {
             <div id='timeline-grid' className='inst-grid'>
               {initCells().map((cell, i) => {
                 return (
-                  <p key={`timeline-${i}`} className={`cell cell-${i} full tl`}>
+                  <p key={`timeline-${i}`} className={`cell cell-${i} tl`}>
                     {i + 1}
                   </p>
                 );
@@ -137,6 +129,28 @@ export default function JS808() {
   );
 }
 
+function Transport({ setPlaying, bpm, setBpm }) {
+  const handleChange = ({ target: { value } }) => {
+    if (value && !value[value.length - 1].match(/\d/)) return;
+    setBpm(value > 300 ? 300 : value < 1 ? 1 : value);
+  };
+
+  return (
+    <div id='transport'>
+      <button id='stop' onClick={() => setPlaying(false)}>
+        <StopIcon className='icon' />
+      </button>
+      <button id='play' onClick={() => setPlaying(true)}>
+        <PlayIcon className='icon' />
+      </button>
+      <input id='bpm' value={bpm} onChange={handleChange} />
+      <label htmlFor='bpm' id='bpm-label'>
+        bpm
+      </label>
+    </div>
+  );
+}
+
 function Instrument({ inst, toggleCell, pattern }) {
   const cells = initCells();
   const styles = `cell cell-${inst}`;
@@ -152,16 +166,20 @@ function Instrument({ inst, toggleCell, pattern }) {
           return (
             <div
               key={id}
-              id={id}
-              className={
-                pattern[i] === 0
-                  ? styles + ` cell-${i}`
-                  : pattern[i] === 1
-                  ? styles + ` cell-${i} full`
-                  : styles + ` cell-${i} half`
-              }
+              className='cell-container'
               onClick={() => toggleCell(inst, i)}
-            ></div>
+            >
+              <div
+                id={id}
+                className={
+                  pattern[i] === 0
+                    ? styles + ` cell-${i}`
+                    : pattern[i] === 1
+                    ? styles + ` cell-${i} full`
+                    : styles + ` cell-${i} half`
+                }
+              ></div>
+            </div>
           );
         })}
       </div>
