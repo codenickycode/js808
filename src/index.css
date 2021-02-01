@@ -16,12 +16,12 @@
   --blue: rgba(2, 123, 255, 1);
   --blue-half: rgba(133, 155, 214, 0.5);
   --red: rgba(255, 0, 172, 1);
-  --red-half: rgba(255, 0, 172, 0.5);
+  --red-half: rgba(255, 0, 172, 0.35);
   --orange: rgba(187, 123, 1, 1);
   --orange-half: rgba(187, 123, 1, 0.5);
   --yellow: rgba(210, 254, 147, 1);
   --yellow-half: rgba(210, 254, 147, 0.5);
-  --grey: rgb(27, 27, 29);
+  --grey: rgb(40, 30, 50, 0.45);
   --grey-half: rgba(27, 27, 29, 0.5);
   --black: #000;
   --white: rgba(236, 237, 229, 1);
@@ -111,7 +111,8 @@ div {
 
 .inst-label {
   width: 10%;
-  text-align: center;
+  margin-right: 1.5rem;
+  text-align: right;
 }
 
 .inst-grid {

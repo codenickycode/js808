@@ -3,6 +3,13 @@ import { ReactComponent as StopIcon } from './icons/stop.svg';
 import { ReactComponent as PlayIcon } from './icons/play.svg';
 import { ReactComponent as ArrowDownIcon } from './icons/chevron-down.svg';
 
+const sounds = {
+  kick: new Audio('./audio/kick.mp3'),
+  snr: new Audio('./audio/snr.mp3'),
+  ch: new Audio('./audio/ch.mp3'),
+  oh: new Audio('./audio/oh.mp3'),
+};
+
 function initCells() {
   const cells = [];
   for (let i = 0; i < 16; i++) {
@@ -13,9 +20,14 @@ function initCells() {
 
 const INIT_EMPTY = () => {
   const pattern = { kick: null, snr: null, oh: null, ch: null };
+  const cells = initCells();
   Object.keys(pattern).forEach((key) => {
-    pattern[key] = initCells();
+    pattern[key] = cells;
   });
+  pattern.grid = {};
+  for (let i = 0, len = cells.length; i < len; i++) {
+    pattern.grid[i] = { kick: 0, snr: 0, ch: 0, oh: 0 };
+  }
   return pattern;
 };
 
@@ -33,6 +45,10 @@ export default function JS808() {
     console.log(`playing: ${playing}`);
   }, [playing]);
 
+  useEffect(() => {
+    console.log(clock);
+  }, [clock]);
+
   // timeline clock
   const interval = useRef(null);
   useEffect(() => {
@@ -43,10 +59,10 @@ export default function JS808() {
       );
     } else {
       clearInterval(interval.current);
-      setClock(0);
+      setClock(-1);
     }
     return () => clearInterval(interval.current);
-  }, [interval, playing]);
+  }, [interval, playing, bpm]);
 
   // cell animation
   useEffect(() => {
@@ -76,9 +92,14 @@ export default function JS808() {
       1,
       pattern[inst][i] === 0 ? 1 : pattern[inst][i] === 1 ? 0.5 : 0
     );
+    const newGrid = {
+      ...pattern.grid,
+      [i]: { ...pattern.grid[i], [inst]: newInst[i] },
+    };
     setPattern((prev) => ({
       ...prev,
       [inst]: newInst,
+      grid: newGrid,
     }));
   }
 
