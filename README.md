@@ -2,7 +2,7 @@
 
 #### by DrumNickyDrum
 
-[Click here to play!](http://github.com)
+[Click here to play!](https://drumnickydrum-js808.netlify.app/)
 
 ## What's next?
 
