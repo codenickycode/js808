@@ -232,6 +232,7 @@ div {
   color: var(--white);
   overflow: hidden;
   text-align: center;
+  font-size: 1.25rem;
 }
 
 #bpm-label {

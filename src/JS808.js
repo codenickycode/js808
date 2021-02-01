@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ReactComponent as StopIcon } from './icons/stop.svg';
 import { ReactComponent as PlayIcon } from './icons/play.svg';
 import { ReactComponent as ArrowDownIcon } from './icons/chevron-down.svg';
+import * as patterns from './patterns';
 import kick from './audio/kick.mp3';
 import snr from './audio/snr.mp3';
 import ch from './audio/ch.mp3';
@@ -14,44 +15,30 @@ const sounds = {
   oh: new Audio(oh),
 };
 
-function initCells() {
-  const cells = [];
-  for (let i = 0; i < 16; i++) {
-    cells[i] = 0;
-  }
-  return cells;
+function play(sound, volume) {
+  const clone = sounds[sound].cloneNode();
+  clone.volume = volume;
+  clone.addEventListener('ended', () => clone.remove());
+  clone.play();
 }
 
-const INIT_EMPTY = () => {
-  const pattern = { kick: null, snr: null, oh: null, ch: null };
-  const cells = initCells();
-  Object.keys(pattern).forEach((key) => {
-    pattern[key] = cells;
-  });
-  pattern.grid = {};
-  for (let i = 0, len = cells.length; i < len; i++) {
-    pattern.grid[i] = { kick: 0, snr: 0, ch: 0, oh: 0 };
-  }
-  return pattern;
-};
-
 export default function JS808() {
-  const [pattern, setPattern] = useState(INIT_EMPTY());
+  const [pattern, setPattern] = useState(patterns.init.pattern);
   const [playing, setPlaying] = useState(false);
   const [clock, setClock] = useState(-1);
   const [bpm, setBpm] = useState(128);
 
-  useEffect(() => {
-    console.log(pattern);
-  }, [pattern]);
+  //   useEffect(() => {
+  //     console.log(pattern);
+  //   }, [pattern]);
 
-  useEffect(() => {
-    console.log(`playing: ${playing}`);
-  }, [playing]);
+  //   useEffect(() => {
+  //     console.log(`playing: ${playing}`);
+  //   }, [playing]);
 
-  useEffect(() => {
-    console.log(clock);
-  }, [clock]);
+  //   useEffect(() => {
+  //     console.log(clock);
+  //   }, [clock]);
 
   // timeline clock
   const interval = useRef(null);
@@ -68,7 +55,7 @@ export default function JS808() {
     return () => clearInterval(interval.current);
   }, [interval, playing, bpm]);
 
-  // cell animation
+  // cell animation & sounds
   useEffect(() => {
     if (playing && clock !== -1) {
       const cells = document.querySelectorAll(`.cell-${clock}`);
@@ -86,32 +73,19 @@ export default function JS808() {
           cell.classList.add('tl-on');
         }
       });
-      for (let [key, val] of Object.entries(pattern.grid[clock])) {
-        if (val) {
-          const clone = sounds[key].cloneNode();
-          clone.volume = val;
-          clone.play();
-          clone.onended = () => clone.remove();
-        }
+      for (let [key, val] of Object.entries(pattern[clock])) {
+        if (val) play(key, val);
       }
     }
-  }, [playing, clock]);
+  }, [playing, clock, pattern]);
 
-  function toggleCell(inst, i) {
-    const newInst = [...pattern[inst]];
-    newInst.splice(
-      i,
-      1,
-      pattern[inst][i] === 0 ? 1 : pattern[inst][i] === 1 ? 0.5 : 0
-    );
-    const newGrid = {
-      ...pattern.grid,
-      [i]: { ...pattern.grid[i], [inst]: newInst[i] },
-    };
+  function toggleCell(i, inst) {
     setPattern((prev) => ({
       ...prev,
-      [inst]: newInst,
-      grid: newGrid,
+      [i]: {
+        ...prev[i],
+        [inst]: prev[i][inst] === 0 ? 1 : prev[i][inst] === 1 ? 0.5 : 0,
+      },
     }));
   }
 
@@ -120,14 +94,14 @@ export default function JS808() {
       <div id='top'>
         <h1 it='title'>JS-808</h1>
         <Transport setPlaying={setPlaying} bpm={bpm} setBpm={setBpm} />
-        <select id='sequence-select'></select>
+        <PatternSelector setPattern={setPattern} setBpm={setBpm} />
       </div>
       <div id='sequencer-container'>
         <div id='sequencer'>
           <div id='timeline' className='inst'>
             <div className='inst-label'></div>
             <div id='timeline-grid' className='inst-grid'>
-              {initCells().map((cell, i) => {
+              {Object.entries(pattern).map((cell, i) => {
                 return (
                   <p key={`timeline-${i}`} className={`cell cell-${i} tl`}>
                     {i + 1}
@@ -136,26 +110,10 @@ export default function JS808() {
               })}
             </div>
           </div>
-          <Instrument
-            inst={'kick'}
-            pattern={pattern.kick}
-            toggleCell={toggleCell}
-          />
-          <Instrument
-            inst={'snr'}
-            pattern={pattern.snr}
-            toggleCell={toggleCell}
-          />
-          <Instrument
-            inst={'oh'}
-            pattern={pattern.oh}
-            toggleCell={toggleCell}
-          />
-          <Instrument
-            inst={'ch'}
-            pattern={pattern.ch}
-            toggleCell={toggleCell}
-          />
+          <Instrument inst={'kick'} pattern={pattern} toggleCell={toggleCell} />
+          <Instrument inst={'snr'} pattern={pattern} toggleCell={toggleCell} />
+          <Instrument inst={'oh'} pattern={pattern} toggleCell={toggleCell} />
+          <Instrument inst={'ch'} pattern={pattern} toggleCell={toggleCell} />
         </div>
       </div>
     </div>
@@ -184,8 +142,25 @@ function Transport({ setPlaying, bpm, setBpm }) {
   );
 }
 
+function PatternSelector({ setBpm, setPattern }) {
+  const handleChange = ({ target: { value } }) => {
+    setBpm(patterns[value].bpm);
+    setPattern(patterns[value].pattern);
+  };
+  return (
+    <select id='sequence-select' onChange={handleChange}>
+      {Object.keys(patterns).map((pattern, i) => {
+        return (
+          <option key={`map-option-${pattern}`} value={pattern}>
+            {pattern}
+          </option>
+        );
+      })}
+    </select>
+  );
+}
+
 function Instrument({ inst, toggleCell, pattern }) {
-  const cells = initCells();
   const styles = `cell cell-${inst}`;
   const label = `${inst}-label`;
   return (
@@ -194,20 +169,20 @@ function Instrument({ inst, toggleCell, pattern }) {
         <h2 id={label}>{inst}</h2>
       </div>
       <div className='inst-grid'>
-        {cells.map((cell, i) => {
+        {Object.entries(pattern).map((cell, i) => {
           const id = inst + i;
           return (
             <div
               key={id}
               className='cell-container'
-              onClick={() => toggleCell(inst, i)}
+              onClick={() => toggleCell(i, inst)}
             >
               <div
                 id={id}
                 className={
-                  pattern[i] === 0
+                  pattern[i][inst] === 0
                     ? styles + ` cell-${i}`
-                    : pattern[i] === 1
+                    : pattern[i][inst] === 1
                     ? styles + ` cell-${i} full`
                     : styles + ` cell-${i} half`
                 }
