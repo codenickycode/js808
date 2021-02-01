@@ -2,12 +2,16 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ReactComponent as StopIcon } from './icons/stop.svg';
 import { ReactComponent as PlayIcon } from './icons/play.svg';
 import { ReactComponent as ArrowDownIcon } from './icons/chevron-down.svg';
+import kick from './audio/kick.mp3';
+import snr from './audio/snr.mp3';
+import ch from './audio/ch.mp3';
+import oh from './audio/oh.mp3';
 
 const sounds = {
-  kick: new Audio('./audio/kick.mp3'),
-  snr: new Audio('./audio/snr.mp3'),
-  ch: new Audio('./audio/ch.mp3'),
-  oh: new Audio('./audio/oh.mp3'),
+  kick: new Audio(kick),
+  snr: new Audio(snr),
+  ch: new Audio(ch),
+  oh: new Audio(oh),
 };
 
 function initCells() {
@@ -66,7 +70,7 @@ export default function JS808() {
 
   // cell animation
   useEffect(() => {
-    if (playing) {
+    if (playing && clock !== -1) {
       const cells = document.querySelectorAll(`.cell-${clock}`);
       cells.forEach((cell) => {
         if (
@@ -82,6 +86,14 @@ export default function JS808() {
           cell.classList.add('tl-on');
         }
       });
+      for (let [key, val] of Object.entries(pattern.grid[clock])) {
+        if (val) {
+          const clone = sounds[key].cloneNode();
+          clone.volume = val;
+          clone.play();
+          clone.onended = () => clone.remove();
+        }
+      }
     }
   }, [playing, clock]);
 
