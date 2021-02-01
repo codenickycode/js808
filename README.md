@@ -1,70 +1,60 @@
-# Getting Started with Create React App
+# JS-808
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+#### by DrumNickyDrum
 
-## Available Scripts
+[Click here to play!](http://github.com)
 
-In the project directory, you can run:
+## What's next?
 
-### `npm start`
+So glad you asked!
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- Refactor & Tests
+- This won't be a solid app unless I get a better audio engine running. I think tone.js is the way to go. At minimum I want to get anything with precise timing out of component state updates since React handles these asynchronously.
+- I think moving the pattern to a context provider will allow me to separate every cell and thus reduce unnecessary rendering.
+- Add better touch controls and style the app responsively.
+- Sign-in to save beats.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## How did I do it?
 
-### `npm test`
+### Timeline
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- 0-2hr (Basic assignment):
 
-### `npm run build`
+  - a wireframe mockup like the example
+  - basic css styles
+  - the minimum stateful React components neccessary (each instrument's cell grid)
+  - the timeline to read the pattern and animate the cells
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- 2-2.5hr (css upgrade):
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+  - mostly for aesthetics
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- 2.5-4hr (sound and patterns):
+  - To remain sub-4hrs I went with a naive implementation instead of employing tone.js
+  - It outputs the beat, although you could never dance to it.
 
-### `npm run eject`
+### What were the hard parts?
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+- Deciding on a data structure for the pattern:
+  - 0-indexed array?
+  - Map similar to a DAW timeline (1.1, 1.2, 1.3, 1.4, 2.1, 2.2...)
+  - For simplicity I ended with a simple array, but will migrate to a map for next version.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### What were the fun parts?
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+- I got a little shot of dopamine when the buttons started lighting up.
+- Also when I could hear my beat come to life, even if a bit wobbly.
+- It's fun to think of all the features I could add (velocity sliding, touch and drag input, global controls)
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### Simplicity vs Flexibility
 
-## Learn More
+- Adding a `patternLength` state to the brain component should be seamless since the cells are rendered dynamically based on the pattern.
+  - The clock is hardcoded at 16 right now, but switching that to `patternLength` would fix it.
+  - Would need to address responsive design / scrolling to adjust for long patterns
+- Velocity is set via 2-step clicks (1 for full, 2 for half).
+  - I think I got this idea from the original 808.
+  - This could be changed to a popup modal with a slider to set the value between 0 and 1 for more granularity.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Is the code tested?
 
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- I am still learning how to test in React and will begin unit testing before upgrading this app (see What's Next).

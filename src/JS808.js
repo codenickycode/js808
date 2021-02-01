@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ReactComponent as StopIcon } from './icons/stop.svg';
 import { ReactComponent as PlayIcon } from './icons/play.svg';
-import { ReactComponent as ArrowDownIcon } from './icons/chevron-down.svg';
+import { ReactComponent as SquareIcon } from './icons/square.svg';
 import * as patterns from './patterns';
 import kick from './audio/kick.mp3';
 import snr from './audio/snr.mp3';
@@ -27,18 +27,6 @@ export default function JS808() {
   const [playing, setPlaying] = useState(false);
   const [clock, setClock] = useState(-1);
   const [bpm, setBpm] = useState(128);
-
-  //   useEffect(() => {
-  //     console.log(pattern);
-  //   }, [pattern]);
-
-  //   useEffect(() => {
-  //     console.log(`playing: ${playing}`);
-  //   }, [playing]);
-
-  //   useEffect(() => {
-  //     console.log(clock);
-  //   }, [clock]);
 
   // timeline clock
   const interval = useRef(null);
@@ -170,23 +158,21 @@ function Instrument({ inst, toggleCell, pattern }) {
       </div>
       <div className='inst-grid'>
         {Object.entries(pattern).map((cell, i) => {
-          const id = inst + i;
+          const id = `${inst}-${i}`;
           return (
             <div
               key={id}
-              className='cell-container'
-              onClick={() => toggleCell(i, inst)}
+              id={id}
+              className={
+                pattern[i][inst] === 0
+                  ? styles + ` cell-${i}`
+                  : pattern[i][inst] === 1
+                  ? styles + ` cell-${i} full`
+                  : styles + ` cell-${i} half`
+              }
+              onMouseDown={() => toggleCell(i, inst)}
             >
-              <div
-                id={id}
-                className={
-                  pattern[i][inst] === 0
-                    ? styles + ` cell-${i}`
-                    : pattern[i][inst] === 1
-                    ? styles + ` cell-${i} full`
-                    : styles + ` cell-${i} half`
-                }
-              ></div>
+              <SquareIcon />
             </div>
           );
         })}

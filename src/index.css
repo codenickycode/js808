@@ -4,6 +4,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  user-select: none;
   /* border: 1px solid red; */
 }
 
@@ -21,8 +22,9 @@
   --orange-half: rgba(187, 123, 1, 0.5);
   --yellow: rgba(210, 254, 147, 1);
   --yellow-half: rgba(210, 254, 147, 0.5);
-  --grey: rgb(40, 30, 50, 0.45);
-  --grey-half: rgba(27, 27, 29, 0.5);
+  --bg: rgb(40, 30, 50, 0.45);
+  --grey: rgb(150, 140, 170, 1);
+  --grey: rgb(150, 140, 170, 0.5);
   --black: #000;
   --white: rgba(236, 237, 229, 1);
   --white-half: rgba(236, 237, 229, 0.5);
@@ -64,7 +66,7 @@ div {
   display: flex;
   flex-direction: column;
   border-radius: 0.5rem;
-  background: var(--grey);
+  background: var(--bg);
 }
 
 #top {
@@ -131,22 +133,22 @@ div {
   border: none;
 }
 
-.cell-container {
+.cell {
   cursor: pointer;
   height: 100%;
   width: 100%;
+  padding: 0.25rem;
   display: flex;
   justify-content: center;
   align-items: center;
+  opacity: 0.5;
+  color: var(--grey);
+  /* transition: 20ms linear; */
 }
 
-.cell {
-  min-width: 2rem;
-  min-height: 2rem;
-  margin: 0.25rem;
-  opacity: 0.5;
-  border-radius: 0.3rem;
-  border: 1px solid var(--purple);
+.cell:hover {
+  opacity: 1;
+  transform: scale(1.1);
 }
 
 #timeline .cell {
@@ -156,18 +158,24 @@ div {
   align-items: center;
   border: none;
   background: none;
+  color: var(--white);
+}
+
+#timeline .cell:hover {
+  opacity: 0.5;
+  transform: none;
 }
 
 .full {
-  background: var(--red);
+  color: var(--red);
 }
 
 .half {
-  background: var(--red-half);
+  color: var(--red-half);
 }
 
 .on {
-  animation: pulse 150ms linear forwards;
+  animation: pulse 150ms linear;
 }
 
 @keyframes pulse {
@@ -239,16 +247,35 @@ div {
   font-style: normal;
 }
 
+#stop:hover,
+#play:hover {
+  transform: scale(1.1);
+}
+
 #stop {
   background: var(--red-half);
+}
+
+#stop:hover {
+  background: var(--red);
 }
 
 #play {
   background: var(--green-half);
 }
 
+#play:hover {
+  background: var(--green);
+}
+
 select {
   cursor: pointer;
+  padding: 0.5rem;
+  background: var(--black);
+  color: var(--white);
+  outline: none;
+  border: none;
+  border-radius: 0.3rem;
 }
 
 .icon {
