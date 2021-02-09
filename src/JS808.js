@@ -2,25 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ReactComponent as StopIcon } from './icons/stop.svg';
 import { ReactComponent as PlayIcon } from './icons/play.svg';
 import { ReactComponent as SquareIcon } from './icons/square.svg';
+import { playPattern, animateCells } from './functions';
 import * as patterns from './patterns';
-import kick from './audio/kick.mp3';
-import snr from './audio/snr.mp3';
-import ch from './audio/ch.mp3';
-import oh from './audio/oh.mp3';
-
-const sounds = {
-  kick: new Audio(kick),
-  snr: new Audio(snr),
-  ch: new Audio(ch),
-  oh: new Audio(oh),
-};
-
-function play(sound, volume) {
-  const clone = sounds[sound].cloneNode();
-  clone.volume = volume;
-  clone.addEventListener('ended', () => clone.remove());
-  clone.play();
-}
 
 export default function JS808() {
   const [pattern, setPattern] = useState(patterns.init.pattern);
@@ -43,27 +26,10 @@ export default function JS808() {
     return () => clearInterval(interval.current);
   }, [interval, playing, bpm]);
 
-  // cell animation & sounds
   useEffect(() => {
     if (playing && clock !== -1) {
-      const cells = document.querySelectorAll(`.cell-${clock}`);
-      cells.forEach((cell) => {
-        if (
-          cell.classList.contains('full') ||
-          cell.classList.contains('half')
-        ) {
-          cell.classList.remove('on');
-          void cell.offsetWidth; // rm>offset>add to reset css animation
-          cell.classList.add('on');
-        } else if (cell.classList.contains('tl')) {
-          cell.classList.remove('tl-on');
-          void cell.offsetWidth; // rm>offset>add to reset css animation
-          cell.classList.add('tl-on');
-        }
-      });
-      for (let [key, val] of Object.entries(pattern[clock])) {
-        if (val) play(key, val);
-      }
+      animateCells(clock);
+      playPattern(pattern, clock);
     }
   }, [playing, clock, pattern]);
 
@@ -86,18 +52,7 @@ export default function JS808() {
       </div>
       <div id='sequencer-container'>
         <div id='sequencer'>
-          <div id='timeline' className='inst'>
-            <div className='inst-label'></div>
-            <div id='timeline-grid' className='inst-grid'>
-              {Object.entries(pattern).map((cell, i) => {
-                return (
-                  <p key={`timeline-${i}`} className={`cell cell-${i} tl`}>
-                    {i + 1}
-                  </p>
-                );
-              })}
-            </div>
-          </div>
+          <Timeline pattern={pattern} />
           <Instrument inst={'kick'} pattern={pattern} toggleCell={toggleCell} />
           <Instrument inst={'snr'} pattern={pattern} toggleCell={toggleCell} />
           <Instrument inst={'oh'} pattern={pattern} toggleCell={toggleCell} />
@@ -145,6 +100,23 @@ function PatternSelector({ setBpm, setPattern }) {
         );
       })}
     </select>
+  );
+}
+
+function Timeline({ pattern }) {
+  return (
+    <div id='timeline' className='inst'>
+      <div className='inst-label'></div>
+      <div id='timeline-grid' className='inst-grid'>
+        {Object.entries(pattern).map((cell, i) => {
+          return (
+            <p key={`timeline-${i}`} className={`cell cell-${i} tl`}>
+              {i + 1}
+            </p>
+          );
+        })}
+      </div>
+    </div>
   );
 }
 

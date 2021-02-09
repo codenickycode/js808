@@ -44,11 +44,6 @@ body {
   font-style: italic;
 }
 
-div {
-  /* border: 1px solid var(--white); */
-  /* background: var(--black-half); */
-}
-
 #root {
   width: 100%;
   height: 100%;
@@ -143,7 +138,6 @@ div {
   align-items: center;
   opacity: 0.5;
   color: var(--grey);
-  /* transition: 20ms linear; */
 }
 
 .cell:hover {

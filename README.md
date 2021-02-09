@@ -6,13 +6,7 @@
 
 ## What's next?
 
-So glad you asked!
-
-- Refactor & Tests
-- This won't be a solid app unless I get a better audio engine running. I think tone.js is the way to go. At minimum I want to get anything with precise timing out of component state updates since React handles these asynchronously.
-- I think moving the pattern to a context provider will allow me to separate every cell and thus reduce unnecessary rendering.
-- Add better touch controls and style the app responsively.
-- Sign-in to save beats.
+Currently there is no resposive design, so this would need to be addressed before this app could be usable. This was just a quick and dirty experiment. I am now developing a full-fledge drum-machine / sequencer using Tone.js. Stay tuned.
 
 ## How did I do it?
 
@@ -36,9 +30,12 @@ So glad you asked!
 ### What were the hard parts?
 
 - Deciding on a data structure for the pattern:
+
   - 0-indexed array?
   - Map similar to a DAW timeline (1.1, 1.2, 1.3, 1.4, 2.1, 2.2...)
-  - For simplicity I ended with a simple array, but will migrate to a map for next version.
+
+- Tracking down irregularities in timing:
+  - It's a side-effect of imprecise javascript timing and React asychronicity. (Moving to Tone.js)
 
 ### What were the fun parts?
 
@@ -57,4 +54,4 @@ So glad you asked!
 
 ### Is the code tested?
 
-- I am still learning how to test in React and will begin unit testing before upgrading this app (see What's Next).
+- No, but I've extracted it into small units and functions. I would write tests before expanding this app further.
